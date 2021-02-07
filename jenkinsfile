@@ -1,11 +1,8 @@
-#!groovy
-//引用共享库 Global Pipeline Libraries
-@Library('jenkinslib') _ 
+//流水线定义:
 
-//引用共享库文件
+@Library('jenkinslib') _     
+
 def mytools = new org.devops.tools()
-
-
 
 //String workspace = "/root/.jenkins/workspace"
 
@@ -13,109 +10,53 @@ pipeline{
     
     agent{
         node{
-            label "master"
-                //customWorkspace "${workspace}"
+            label "master"  //指定运行节点的标签或名称
+                //customWorkspace "${workspace}" //指定运行工作目录(可选)
         }
     }
     options{
-        timestamps()
-        skipDefaultCheckout()
-        disableConcurrentBuilds()
-        timeout(time: 1,unit: "HOURS")
-    }
-    
-    //parameters参数定义     
-    parameters {
-        string(name: 'canshu', defaultValue: 'Jenkins', description: '描述信息')
-        string(name: 'name', defaultValue: 'username', description: '用户名')
-        string(name: 'password', defaultValue: 'password', description: 'string类型密码')
-        password(name: 'D_CHOICE', defaultValue: '', description: 'password类型密码')
-        choice(name: 'build_env', choices: '开发环境\n测试环境\n生产环境\n', description: '请选择构建的环境')
-    }
-    
-    //定义全局变量
-    environment {
-        harborEnv = "harbor url"
-        harborPosswdEnv = "harborPasswd"
-        
-
-    }
-    
-    //tools定义,构建工具maven、ant、gradle,获取通过自动安装或手动放置工具的环境变量。支持maven/jdk/gradle。工具的名称必须在系统设置->全局工具配置中定义。
-    tools {
-         jdk 'jdk1.8'
-        
+        timestamps()        //日志会有时间
+        skipDefaultCheckout()        //删除隐式 checkout scrm语句
+        disableConcurrentBuilds()        //禁止运行
+        timeout(time: 1,unit: "HOURS")        //流水线超时时间
     }
 
 
 stages {
-    
-    stage("GetGode"){
+    //下载代码
+    stage("GetGode"){//阶段名称
         
-        steps{
-            timeout(time:5,unit:"MINUTES"){
-                script{
+        steps{//步骤
+            timeout(time:5,unit:"MINUTES"){//步骤超时时间
+                script{//填写运行代码
                     println("获取代码")
-                    println("Hello ${params.canshu}")//使用 parameters参数
-                    println("username:${params.name}")
-                    println("password:${params.password}")
-                    
-                    println("${harborEnv}")//引用变量
-                    
-                    println("password:${params.D_CHOICE}")
-
-                    mytools.PrintMes('this is my lib')
-                        
-                    sh 'java -version'//使用tools
-                     
-                    echo "您选择了：${params.build_env}"
-                    echo '构建阶段....'
-                    
-                    //增加maven;maven3 为全局工具中maven 配置 的Name
-                    mvnHome = tool "maven3"
-                    println(mvnHome)
-                    sh "${mvnHome}/bin/mvn --version"
+                    mytools.PrintMes("获取代码",'green')
                 }
             }
-            
-            script {
-                def browsers = ['ie','chrome','firefox']
-                for (int i=0;i<browsers.size();i++){
-                    println("${browsers[i]}")
-                }
-            }
-            
         }
         
     }
-    
-    stage("Build"){
+    //构建
+    stage("Build"){//阶段名称
         
-        steps{
+        steps{//步骤
             timeout(time:20,unit:"MINUTES"){
-                script{
-                    println("应用打包  ")
-                    
-                    if (params.build_env == '测试环境') {
-                            echo '=====》》》测试环境进行远程发布。'
-				        }else if(params.build_env=='生产环境'){
-                            echo '=====》》》生产环境进行远程发布。'
-			            }else {
-                            echo '=====》》》 默认（开发）环境进行远程发布。'
-				      }
+                script{//填写运行代码
+                     mytools.PrintMes("应用打包",'red')
                 }
             }
         }
         
     }
     
-    stage("CodeScan"){
+    stage("CodeScan"){//阶段名称
         
-        steps{
+        steps{//步骤
             
             timeout(time:30,unit:"MINUTES"){
-                script{
-                    print("代码扫描 ")
+                script{//填写运行代码
+                    //print("代码扫描 ")
+                    mytools.PrintMes("代码扫描 ",'blue')
                 }
             }
             
@@ -125,32 +66,23 @@ stages {
     
     
 }
-
+//构建后操作
 post {
-    always {
+    always {//总是执行脚本片段
         script{
             println("always")
-            
-        }
-    }
-    
-    success {
-        script{
-            currentBuild.description += "\n 构建成功 "
-            
             mail subject: "构建完成",
-                    body: """
+                   body: """
 <div id="content">
   <h1>CI报告</h1>
   <div id="sum2">
       <h2>Jenkins 运行结果</h2>
       <ul>
       
-	  <li>jenkins的执行结果 : <a>jenkins 执行成功</a></li>
-	  <li>jenkins的URL : <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a></li>
-	  <li>jenkins的Job名称 : <a id="url_1">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></li>
-	  <li>jenkins项目名称 : <a>${env.JOB_NAME}</a></li>
-	  <li>parameters参数定义的密码为:${params.D_CHOICE}</li>
+          <li>jenkins的执行结果 : <a>jenkins 执行成功</a></li>
+          <li>jenkins的URL : <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a></li>
+          <li>jenkins的Job名称 : <a id="url_1">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a></li>
+         
       </ul>
   </div>
   <div id="sum0">
@@ -160,35 +92,39 @@ post {
   </ul>
   <h2>GIT 信息</h2>
   <ul>
-	<li>GIT项目的地址 : <a></a></li>
-	<li>GIT项目当前的分支名 : </li>
-	<li>GIT最后一次提交的commitID : </li>
+        <li>GIT项目的地址 : <a></a></li>
+        <li>GIT项目当前的分支名 : </li>
+        <li>GIT最后一次提交的commitID : </li>
   </ul>
   <h2>MAVEN 信息</h2>
   <ul>
-    <li>maven服务路径为 : <a>${mvnHome}</a></li>
+    <li>maven服务路径为 : <a></a></li>
   </ul>
 
   
   </div>
   </div>
-		  
-             """,
                   
-                    
+             """,
             charset: 'utf-8',
             from: '472954284@qq.com',
             mimeType: 'text/html',
             to: '15261448393@139.com'
         }
     }
-    failure {
+    
+    success {//成功后执行
+        script{
+            currentBuild.description += "\n 构建成功 "
+        }
+    }
+    failure {//失败执行
         script{
             currentBuild.description += "\n 构建失败 "
         }
     }
     
-    aborted {
+    aborted {//取消执行
         script{
             currentBuild.description += "\n 构建取消 "
         }
@@ -198,3 +134,18 @@ post {
 }
 
 }
+
+
+/*
+注:
+currentBuild.description
+currentBuild 全局变量
+description 构建描述
+
+Jenkinsfile的组成及每个部分的功能含义:
+
+使用agent{}，指定node节点/workspace（定义好此流水线在某节点运行）
+指定options{}运行选项（定义好此流水线运行时的一些选项，例如输出日志的时间）
+指定stages{}（stages包含多个stage，stage包含steps。是流水线的每个步骤)
+指定post{}（定义好此流水线运行成功或者失败后，根据状态做一些任务）
+*/
