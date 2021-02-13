@@ -3,7 +3,7 @@ package org.devops
 
 //构建类型
 def Build(buildType,buildShell){
-    def buildTools = ["mvn":"maven3","npm":"nodejs"]
+    def buildTools = ["maven3":"maven3","npm":"nodejs"]
     
     
     println("当前选择的构建类型为 ${buildType}")
