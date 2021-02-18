@@ -1,12 +1,13 @@
 <project>  
   <modelVersion>4.0.0</modelVersion>  
   
-  <groupId>com.junit</groupId>  
-  <artifactId>junit</artifactId>  
-  <version>4.13</version>  
+  <dependency>
+  <groupId>com.junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>4.13</version>
   <packaging>jar</packaging>
+</dependency>
   
-  <name>maven-releases</name>  
   <url>http://http://192.168.145.142:8081</url>  
    <properties>  
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
