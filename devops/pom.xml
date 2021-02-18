@@ -1,0 +1,15 @@
+<project>  
+  <modelVersion>4.0.0</modelVersion>  
+  
+  <groupId>com.smallrye</groupId>  
+  <artifactId>smallrye-mutiny-vertx-core</artifactId>  
+  <version>1.3.0</version>  
+  <packaging>jar</packaging>
+  
+  <name>maven-releases</name>  
+  <url>http://http://192.168.145.142:8081</url>  
+   <properties>  
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+  </properties>  
+  
+</project> 
