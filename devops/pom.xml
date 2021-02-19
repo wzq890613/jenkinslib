@@ -7,7 +7,7 @@
   <packaging>jar</packaging>
   
   <name>maven-releases</name>  
-  <url>http://http://192.168.145.142:8081</url>  
+  <url>//http://192.168.145.142:8081</url>  
    <properties>  
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
   </properties>  
