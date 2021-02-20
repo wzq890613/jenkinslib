@@ -1,1 +1,21 @@
-1
+<project>  
+  <modelVersion>4.0.0</modelVersion>  
+  
+  <groupId>com.commons</groupId>
+  <artifactId>commons-lang</artifactId>
+  <version>2.1</version>
+  <packaging>jar</packaging>
+  
+  <url>http://192.168.145.142:8081</url>  
+   <properties>  
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+  </properties>  
+  
+  <distributionManagement>
+	<repository>
+		<id>maven-releases</id>
+		<url>192.168.145.142:8081:8081/repository/maven-releases/</url>
+	</repository>
+</distributionManagement>
+  
+</project> 
