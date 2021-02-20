@@ -1,9 +1,9 @@
 <project>  
   <modelVersion>4.0.0</modelVersion>  
   
-  <groupId>com.commons</groupId>
-  <artifactId>commons-lang</artifactId>
-  <version>2.1</version>
+  <groupId>com.maven</groupId>
+  <artifactId>maven-filtering</artifactId>
+  <version>1.1</version>
   <packaging>jar</packaging>
   
   <url>http://192.168.145.142:8081</url>  
